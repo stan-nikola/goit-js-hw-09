@@ -1,0 +1,18 @@
+.button-container {
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+}
+.color-number {
+  font-family: inherit;
+  font-size: 30px;
+  text-align: center;
+  margin: 20px 0;
+}
+
+.btn {
+  padding: 5px 40px;
+}
+.btn:first-child {
+  margin-right: 20px;
+}
