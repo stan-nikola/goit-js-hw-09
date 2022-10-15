@@ -7,12 +7,22 @@
   font-family: inherit;
   font-size: 30px;
   text-align: center;
-  margin: 20px 0;
+  margin-bottom: 20px;
 }
 
 .btn {
   padding: 5px 40px;
 }
-.btn:first-child {
+.btn:not(:last-child) {
   margin-right: 20px;
+}
+label {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+p {
+  margin: 0;
+  padding: 0;
 }
