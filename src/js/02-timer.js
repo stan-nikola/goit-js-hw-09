@@ -46,11 +46,11 @@ function startTimer() {
   refs.startTimerBtn.disabled = 'true';
   const dateNow = Date.now();
   const userTime = calendar.selectedDates[0].getTime() - Date.now();
-  new FlipDown(
-    Math.floor(
-      new Date(calendar.selectedDates[0] - INTERVAL_TIME).getTime() / 1000
-    )
-  ).start();
+  //   new FlipDown(
+  //     Math.floor(
+  //       new Date(calendar.selectedDates[0] - INTERVAL_TIME).getTime() / 1000
+  //     )
+  //   ).start();
 
   intervalId = setInterval(() => {
     deltaTime = Date.now() - dateNow;
