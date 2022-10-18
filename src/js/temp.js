@@ -90,79 +90,130 @@
 //   refs.seconds.textContent = secs;
 // }
 
-import flatpickr from 'flatpickr';
-import { Russian } from 'flatpickr/dist/l10n/ru.js';
-import 'flatpickr/dist/themes/material_blue.css';
+// import flatpickr from 'flatpickr';
+// import { Russian } from 'flatpickr/dist/l10n/ru.js';
+// import 'flatpickr/dist/themes/material_blue.css';
 
-import 'flatpickr/dist/flatpickr.min.css';
+// import 'flatpickr/dist/flatpickr.min.css';
+// import Notiflix from 'notiflix';
+// import { Notify } from 'notiflix/build/notiflix-notify-aio';
+
+// import '../css/timer.css';
+
+// const calendar = flatpickr('#datetime-picker', {
+//   locale: Russian,
+//   enableTime: true,
+//   time_24hr: true,
+//   defaultDate: new Date(),
+//   minuteIncrement: 1,
+//   onClose(selectedDates) {
+//     dateValidate(selectedDates[0]);
+//   },
+// });
+
+// const refs = {
+//   startTimerBtn: document.querySelector('[data-start]'),
+//   days: document.querySelector('[data-days]'),
+//   hours: document.querySelector('[data-hours]'),
+//   minutes: document.querySelector('[data-minutes]'),
+//   seconds: document.querySelector('[data-seconds]'),
+// };
+
+// function dateValidate(inputDate) {
+//   if (new Date() >= inputDate) {
+//     refs.startTimerBtn.disabled = 'true';
+//     return Notiflix.Notify.warning('Please choose a date in the future');
+//   }
+//   refs.startTimerBtn.removeAttribute('disabled');
+//   Notiflix.Notify.success('Press start counting time');
+// }
+
+// let intervalId = null;
+// const INTERVAL_TIME = 1000;
+// refs.startTimerBtn.addEventListener('click', timer);
+
+// function timer() {
+//   const dateNow = Date.now();
+//   const userTime = calendar.selectedDates[0].getTime() - Date.now();
+
+//   intervalId = setInterval(() => {
+//     deltaTime = Date.now() - dateNow;
+//     if (userTime < deltaTime + INTERVAL_TIME) {
+//       clearInterval(intervalId);
+//       return;
+//     }
+
+//     updateClockFace(convertMs(userTime - deltaTime));
+//   }, INTERVAL_TIME);
+// }
+
+// function convertMs(time) {
+//   const days = pad(Math.floor((time / (1000 * 60 * 60 * 24)) % 30));
+//   const hours = pad(Math.floor((time / (1000 * 60 * 60)) % 24));
+//   const mins = pad(Math.floor((time / (1000 * 60)) % 60));
+//   const secs = pad(Math.floor((time / 1000) % 60));
+
+//   return { days, hours, mins, secs };
+// }
+
+// function pad(value) {
+//   return String(value).padStart(2, '0');
+// }
+
+// function updateClockFace({ days, hours, mins, secs }) {
+//   refs.days.textContent = days;
+//   refs.hours.textContent = hours;
+//   refs.minutes.textContent = mins;
+//   refs.seconds.textContent = secs;
+// }
 import Notiflix from 'notiflix';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 
-import '../css/timer.css';
-
-const calendar = flatpickr('#datetime-picker', {
-  locale: Russian,
-  enableTime: true,
-  time_24hr: true,
-  defaultDate: new Date(),
-  minuteIncrement: 1,
-  onClose(selectedDates) {
-    dateValidate(selectedDates[0]);
-  },
-});
-
 const refs = {
-  startTimerBtn: document.querySelector('[data-start]'),
-  days: document.querySelector('[data-days]'),
-  hours: document.querySelector('[data-hours]'),
-  minutes: document.querySelector('[data-minutes]'),
-  seconds: document.querySelector('[data-seconds]'),
+  form: document.querySelector('.form'),
 };
 
-function dateValidate(inputDate) {
-  if (new Date() >= inputDate) {
-    refs.startTimerBtn.disabled = 'true';
-    return Notiflix.Notify.warning('Please choose a date in the future');
-  }
-  refs.startTimerBtn.removeAttribute('disabled');
-  Notiflix.Notify.success('Press start counting time');
-}
+refs.form.addEventListener('submit', onFormSubmit);
 
-let intervalId = null;
-const INTERVAL_TIME = 1000;
-refs.startTimerBtn.addEventListener('click', timer);
+function onFormSubmit(evt) {
+  evt.preventDefault();
 
-function timer() {
-  const dateNow = Date.now();
-  const userTime = calendar.selectedDates[0].getTime() - Date.now();
+  const startValue = Number(evt.target.delay.value);
+  const stepValue = Number(evt.target.step.value);
+  const amount = Number(evt.target.amount.value);
 
-  intervalId = setInterval(() => {
-    deltaTime = Date.now() - dateNow;
-    if (userTime < deltaTime + INTERVAL_TIME) {
+  let delayValue = startValue - stepValue;
+  let promiseCounter = 0;
+  const intervalId = setInterval(() => {
+    promiseCounter += 1;
+    delayValue += stepValue;
+    if (promiseCounter >= amount) {
       clearInterval(intervalId);
-      return;
     }
-
-    updateClockFace(convertMs(userTime - deltaTime));
-  }, INTERVAL_TIME);
+    createPromise(promiseCounter, delayValue).then(onSuccess).catch(onError);
+  }, stepValue);
 }
 
-function convertMs(time) {
-  const days = pad(Math.floor((time / (1000 * 60 * 60 * 24)) % 30));
-  const hours = pad(Math.floor((time / (1000 * 60 * 60)) % 24));
-  const mins = pad(Math.floor((time / (1000 * 60)) % 60));
-  const secs = pad(Math.floor((time / 1000) % 60));
+function createPromise(position, delay) {
+  console.log('position:', position);
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      const shouldResolve = Math.random() > 0.3;
 
-  return { days, hours, mins, secs };
+      if (shouldResolve) {
+        resolve(`✅ Fulfilled promise ${position} in ${delay}ms`);
+      } else {
+        reject(`❌ Rejected promise ${position} in ${delay}ms`);
+      }
+    }, delay);
+  });
 }
 
-function pad(value) {
-  return String(value).padStart(2, '0');
+function onSuccess(result) {
+  Notiflix.Notify.success(result);
+  console.log(result);
 }
-
-function updateClockFace({ days, hours, mins, secs }) {
-  refs.days.textContent = days;
-  refs.hours.textContent = hours;
-  refs.minutes.textContent = mins;
-  refs.seconds.textContent = secs;
+function onError(error) {
+  Notiflix.Notify.failure(error);
+  console.log(error);
 }

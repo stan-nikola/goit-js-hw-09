@@ -59,7 +59,6 @@ function startTimer() {
       return;
     }
     updateClockFace(convertMs(userTime - deltaTime));
-    console.log(userTime);
   }, INTERVAL_TIME);
 }
 
