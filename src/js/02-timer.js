@@ -54,11 +54,12 @@ function startTimer() {
 
   intervalId = setInterval(() => {
     const deltaTime = Date.now() - dateNow;
-    if (userTime < deltaTime + INTERVAL_TIME) {
+    if (userTime < deltaTime) {
       clearInterval(intervalId);
       return;
     }
     updateClockFace(convertMs(userTime - deltaTime));
+    console.log(userTime);
   }, INTERVAL_TIME);
 }
 
