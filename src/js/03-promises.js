@@ -19,31 +19,14 @@ function onFormSubmit(evt) {
     position: 0,
   };
 
-  // new Promise(function (resolve, reject) {
-  //   const intervalId = setInterval(() => {
-  //     promiseData.position += 1;
-  //     promiseData.delay += stepValue;
-
-  //     if (promiseData.position >= amount) {
-  //       clearInterval(intervalId);
-  //     }
-  //     resolve(createPromise(promiseData).then(onSuccess).catch(onError));
-  //   }, stepValue);
-  // });
-
-  new Promise(function (resolve) {
-    setTimeout(() => {
-      for (let i = 1; i <= amount; i += 1) {
-        promiseData.position = i;
-        promiseData.delay += stepValue;
-        resolve(createPromise(promiseData).then(onSuccess).catch(onError));
-      }
-    }, startValue);
-  });
+  for (let i = 1; i <= amount; i += 1) {
+    promiseData.position = i;
+    promiseData.delay += stepValue;
+    createPromise(promiseData).then(onSuccess).catch(onError);
+  }
 }
 
 function createPromise({ position, delay }) {
-  console.log({ position, delay });
   return new Promise((resolve, reject) => {
     setTimeout(() => {
       const shouldResolve = Math.random() > 0.3;
